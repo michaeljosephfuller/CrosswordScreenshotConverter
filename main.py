@@ -6,7 +6,7 @@ from setup.specify_grid_size import specify_grid_size
 
 from converter.converter import Converter
 
-
+13
 def main():
     
     print('Welcome to the Crossword Screenshot Converter.')

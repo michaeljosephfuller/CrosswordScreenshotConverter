@@ -38,6 +38,10 @@ class Converter:
             columns=range(self.grid_size),
             dtype='bool'
             )
+        
+    
+    def is_dark_mode_letter_box(self, rgb_value: tuple) -> bool:
+        return True if all(val < 20 for val in rgb_value[:3]) else False
 
 
     def convert_crossword_screenshot_to_df(self) -> None:
@@ -54,17 +58,20 @@ class Converter:
                 y_pixel = np.floor(y_pixel)
                 rgb_value = pix[x_pixel, y_pixel]
 
-                target = (0, 0, 0) if self.dark_mode else (255, 255, 255)
+                if not self.dark_mode:
+                    is_letter_box = (rgb_value[:3] == (255, 255, 255))
+                else:
+                    is_letter_box = self.is_dark_mode_letter_box(rgb_value)
 
-                if rgb_value == target:
+                if is_letter_box:
                     self.crossword_df.at[x_idx, y_idx] = True
-                    # cell_colour = 'White'
+                    cell_colour = 'White'
                 else:
                     self.crossword_df.at[x_idx, y_idx] = False
-                    # cell_colour = 'Black'
+                    cell_colour = 'Black'
 
                 # Show cell colour information
-                # print(f'Color at cell ({x_idx}, {y_idx}), co-ordinate ({x_pixel}, {y_pixel}): {cell_colour}')
+                print(f'Color at cell ({x_idx}, {y_idx}), co-ordinate ({x_pixel}, {y_pixel}): {rgb_value} -> {cell_colour}')
 
         # Put df in correct order
         # self.crossword_df = self.crossword_df.loc[::-1]
